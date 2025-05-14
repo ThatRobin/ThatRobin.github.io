@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Robin | Projects</title>
+  <link rel="stylesheet" href="utilities.css"/>
+  <link rel="stylesheet" href="navbar.css"/>
+  <link rel="stylesheet" href="project-cards.css"/>
+  <link rel="stylesheet" href="tagbar.css"/>
+  <link rel="stylesheet" href="modal.css"/>
+  <link rel="stylesheet" href="theme.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="script.js"></script>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">Robin</div>
+      <div class="nav-spacer"></div>
+      <div class="nav-right">
+        <ul class="nav-links">
+          <li><a href="index.html">About</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <label id="theme-switch-label" class="theme-switch">
+          <input type="checkbox" id="theme-switch-input" aria-label="Toggle light/dark mode">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </nav>
+  </header>
+
+  <section>
+    <h2>Projects</h2>
+    <div id="projects-list"></div> <!-- Placeholder for projects -->
+  </section>
+
+  <footer>
+    <p>© 2025 Robin. MIT Licensed.</p>
+  </footer>
+
+  <script src="darktheme.js"></script>
+  <script>
+    // Load projects from JSON
+    let allProjects = [];
+    let activeTags = new Set();
+    let allTags = [];
+
+    async function loadProjectsFromJson() {
+      const response = await fetch('assets/projects/projects.json');
+      const projects = await response.json();
+      allProjects = projects;
+      // Collect all unique tags
+      const tagSet = new Set();
+      projects.forEach(p => (p.tags || []).forEach(tag => tagSet.add(tag)));
+      allTags = Array.from(tagSet).sort();
+      renderTagButtons();
+      renderProjects();
+    }
+
+    function getProjectPaths(project) {
+      const base = `assets/projects/${project.name}/`;
+      return {
+        md: base + 'description.md',
+        icon: base + 'icon.png',
+        bg: base + 'background.jpg',
+        // fallback for png backgrounds
+        bgAlt: base + 'background.png',
+      };
+    }
+
+    function renderTagButtons() {
+      let tagBar = document.getElementById('tag-bar');
+      if (!tagBar) {
+        tagBar = document.createElement('div');
+        tagBar.id = 'tag-bar';
+        tagBar.style.margin = '1.2em 0 0.5em 0';
+        tagBar.style.display = 'flex';
+        tagBar.style.flexWrap = 'wrap';
+        tagBar.style.gap = '0.5em';
+        document.querySelector('h2').after(tagBar);
+      } else {
+        tagBar.innerHTML = '';
+      }
+      // 'All' button
+      const allBtn = document.createElement('button');
+      allBtn.textContent = 'All';
+      allBtn.className = 'tag-btn';
+      allBtn.onclick = () => {
+        activeTags.clear();
+        renderTagButtons();
+        renderProjects();
+      };
+      if (activeTags.size === 0) allBtn.classList.add('active');
+      tagBar.appendChild(allBtn);
+      // Tag buttons
+      allTags.forEach(tag => {
+        const btn = document.createElement('button');
+        btn.textContent = tag;
+        btn.className = 'tag-btn';
+        if (activeTags.has(tag)) btn.classList.add('active');
+        btn.onclick = () => {
+          if (activeTags.has(tag)) activeTags.delete(tag);
+          else activeTags.add(tag);
+          renderTagButtons();
+          renderProjects();
+        };
+        tagBar.appendChild(btn);
+      });
+    }
+
+    function renderProjects() {
+      const list = document.getElementById('projects-list');
+      list.innerHTML = '';
+      let filtered = allProjects;
+      if (activeTags.size > 0) {
+        filtered = allProjects.filter(p => (p.tags || []).some(tag => activeTags.has(tag)));
+      }
+      filtered.forEach(project => loadProject(project));
+    }
+
+    // Function to load and render a project card from JSON object
+    async function loadProject(project) {
+      const paths = getProjectPaths(project);
+      // Try jpg first, fallback to png if not found
+      let bgUrl = paths.bg;
+      try {
+        const bgResp = await fetch(bgUrl, { method: 'HEAD' });
+        if (!bgResp.ok) bgUrl = paths.bgAlt;
+      } catch { bgUrl = paths.bgAlt; }
+      const response = await fetch(paths.md);
+      const markdown = await response.text();
+      // Extract everything up to and including the first paragraph (non-heading)
+      const blocks = markdown.split(/\n\s*\n/);
+      let result = '';
+      let foundParagraph = false;
+      for (let i = 0; i < blocks.length; i++) {
+        const block = blocks[i];
+        if (!foundParagraph && block.trim().length && !block.trim().startsWith('#')) {
+          result += block + '\n\n';
+          foundParagraph = true;
+          break;
+        } else {
+          result += block + '\n\n';
+        }
+      }
+      const htmlContent = marked.parse(result);
+
+      const projectElement = document.createElement('div');
+      projectElement.classList.add('project-card');
+      // Add background and icon images
+      const bgDiv = document.createElement('div');
+      bgDiv.className = 'project-bg';
+      bgDiv.style.backgroundImage = `url('${bgUrl}')`;
+      // Check if icon exists before adding
+      let iconExists = false;
+      try {
+        const iconResp = await fetch(paths.icon, { method: 'HEAD' });
+        iconExists = iconResp.ok;
+      } catch {}
+      let icon;
+      if (iconExists) {
+        icon = document.createElement('img');
+        icon.className = 'project-icon';
+        icon.src = paths.icon;
+        icon.alt = 'Project Icon';
+        // No fallback to default icon
+      }
+      // Content wrapper
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'project-content';
+      contentDiv.innerHTML = htmlContent;
+      // Assemble
+      projectElement.appendChild(bgDiv);
+      if (iconExists) projectElement.appendChild(icon);
+      projectElement.appendChild(contentDiv);
+
+      // Add Read More button
+      const readMoreBtn = document.createElement('button');
+      readMoreBtn.className = 'read-more-btn';
+      readMoreBtn.textContent = 'Read More';
+      readMoreBtn.onclick = async () => {
+        try {
+          const descResponse = await fetch(paths.md);
+          if (!descResponse.ok) throw new Error('No description found');
+          const descMarkdown = await descResponse.text();
+          const descHtml = marked.parse(descMarkdown);
+          showModal(descHtml);
+        } catch (e) {
+          showModal('<p>No additional description available.</p>');
+        }
+      };
+      projectElement.appendChild(readMoreBtn);
+      document.getElementById('projects-list').appendChild(projectElement);
+    }
+
+    // Modal logic
+    function showModal(html) {
+      let modal = document.getElementById('project-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'project-modal';
+        modal.innerHTML = `
+          <div class="modal-backdrop"></div>
+          <div class="modal-content">
+            <button class="modal-close">×</button>
+            <div class="modal-body"></div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+        modal.querySelector('.modal-close').onclick = () => modal.style.display = 'none';
+        modal.querySelector('.modal-backdrop').onclick = () => modal.style.display = 'none';
+      }
+      modal.querySelector('.modal-body').innerHTML = html;
+      modal.style.display = 'flex';
+    }
+
+
+    loadProjectsFromJson();
+  </script>
+</body>
+</html>

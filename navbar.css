@@ -1,0 +1,79 @@
+/* Navigation Bar Styles */
+header {
+  background: #181c24;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+  padding: 0 0 0.5rem 0;
+}
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: none;
+  margin: 0;
+  padding: 0.7rem 0 0.7rem 0;
+}
+.logo {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--main-accent, #b22234);
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  margin-right: 2.2rem;
+  margin-left: 2.2rem;
+  text-align: left;
+}
+.nav-spacer {
+  flex: 1 1 auto;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+  padding-right: 2.2rem;
+}
+.nav-links {
+  display: flex;
+  gap: 2.2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-links li {
+  display: flex;
+}
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.13rem;
+  font-weight: 500;
+  padding: 0.3em 0.7em;
+  border-radius: 0.4em;
+  transition: background 0.16s, color 0.16s;
+  letter-spacing: 0.01em;
+}
+.nav-links a:hover, .nav-links a.active {
+  background: var(--main-accent, #b22234);
+  color: #fff;
+}
+@media (max-width: 700px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.7rem 0 0.7rem 0;
+  }
+  .logo {
+    font-size: 1.5rem;
+    margin-bottom: 0.5em;
+    margin-left: 1rem;
+  }
+  .nav-links {
+    gap: 1.1rem;
+  }
+  .nav-right {
+    gap: 1.1rem;
+    width: 100%;
+    justify-content: flex-end;
+    padding-right: 1rem;
+  }
+}

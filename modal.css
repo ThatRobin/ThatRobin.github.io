@@ -1,0 +1,55 @@
+/* Modal Styles */
+#project-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+#project-modal[style*="display: flex"] {
+  display: flex !important;
+}
+#project-modal .modal-backdrop {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(30, 32, 38, 0.55);
+  z-index: 1;
+}
+#project-modal .modal-content {
+  position: relative;
+  z-index: 2;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  max-width: 540px;
+  width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: modal-pop 0.18s cubic-bezier(.4,1.6,.6,1) 1;
+}
+#project-modal .modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #888;
+  cursor: pointer;
+  z-index: 3;
+  transition: color 0.15s;
+}
+#project-modal .modal-close:hover {
+  color: #222;
+}
+#project-modal .modal-body {
+  margin-top: 1.5rem;
+  font-size: 1.08rem;
+  color: #222;
+}
+@keyframes modal-pop {
+  0% { transform: scale(0.92) translateY(30px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}

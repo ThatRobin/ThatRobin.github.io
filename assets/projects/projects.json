@@ -1,0 +1,50 @@
+[
+  {
+    "name": "apoli-bolt",
+    "tags": ["tool", "minecraft"]
+  },
+   {
+    "name": "bountiful-decks",
+    "tags": ["unity", "vr"]
+  },
+   {
+    "name": "bundles-o-bundles",
+    "tags": ["minecraft", "modding"]
+  },
+   {
+    "name": "cobblemon-shinies",
+    "tags": ["minecraft", "modding"]
+  },
+   {
+    "name": "codexcript",
+    "tags": ["unity"]
+  },
+   {
+    "name": "cosmetic-armour",
+    "tags": ["minecraft", "modding"]
+  },
+  {
+    "name": "extra-keybinds",
+    "tags": ["minecraft", "modding"]
+  },
+  {
+    "name": "foosh",
+    "tags": ["minecraft", "modding"]
+  },
+  {
+    "name": "its-about-time",
+    "tags": ["unity"]
+  },
+  {
+    "name": "mage-mayhem",
+    "tags": ["unity"]
+  },
+  {
+    "name": "retro64",
+    "tags": ["minecraft", "modding"]
+  },
+  {
+    "name": "soul-squad",
+    "tags": ["minecraft", "modding"]
+  }
+]
