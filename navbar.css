@@ -58,22 +58,40 @@ nav {
 }
 @media (max-width: 700px) {
   nav {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
     padding: 0.7rem 0 0.7rem 0;
+    width: 100%;
   }
   .logo {
     font-size: 1.5rem;
-    margin-bottom: 0.5em;
+    margin-bottom: 0;
     margin-left: 1rem;
+    margin-right: 1rem;
+    flex: 0 0 auto;
+    min-width: 0;
+    max-width: 60vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    order: 1;
   }
-  .nav-links {
-    gap: 1.1rem;
+  .nav-spacer {
+    display: none;
   }
   .nav-right {
     gap: 1.1rem;
-    width: 100%;
+    width: auto;
     justify-content: flex-end;
     padding-right: 1rem;
+    flex: 1 1 auto;
+    order: 2;
+    min-width: 0;
+  }
+  .nav-links {
+    gap: 1.1rem;
+    flex-wrap: nowrap;
+    min-width: 0;
   }
 }
